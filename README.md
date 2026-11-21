@@ -1,266 +1,112 @@
-# 🪖 Army Quarter Engineering Services (QES)
-### Complaint Management System — MERN Stack
+# Army QES — Complaint Management System
 
-A full-stack web application for managing engineering service complaints in Army quarters. Built with MongoDB, Express.js, React + Vite, and Node.js.
+![MERN](https://img.shields.io/badge/Stack-MERN-16a34a?style=flat-square)
+![React](https://img.shields.io/badge/Frontend-React-61dafb?style=flat-square&logo=react)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?style=flat-square&logo=nodedotjs)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-47a248?style=flat-square&logo=mongodb)
+![Socket.io](https://img.shields.io/badge/Notifications-Socket.io-010101?style=flat-square)
 
----
+A full-stack complaint management application designed around an Army Quarter Engineering Services (QES) workflow. It helps users submit and follow complaints, engineers handle assigned work, and administrators coordinate users, assignments, and operational reporting.
 
+## Core Capabilities
 
-## Local setup
+### Role-based access
+- JWT authentication
+- User, Engineer, and Admin roles
+- Protected routes and role-based permissions
+- Secure password hashing
 
-1. Install Node.js (LTS) and MongoDB, or create a MongoDB Atlas database.
-2. In `server/`, copy `.env.example` to `.env` and set a private `JWT_SECRET` and your `MONGODB_URI`.
-3. Install dependencies in both folders: `cd server && npm install`, then `cd ../client && npm install`.
-4. Start the API with `cd server && npm run dev`. Start the UI in a second terminal with `cd client && npm run dev`.
-5. Open the Vite URL shown in the terminal (normally `http://localhost:5173`).
+### Complaint lifecycle
+- Submit and view complaints
+- Track complaint status
+- Assign complaints to engineers
+- Add work remarks and progress updates
+- Support before-and-after image uploads
+- Search and filter by status, category, and priority
 
-### First administrator account
+### Dashboards and notifications
+- Role-specific dashboard views
+- Analytics and complaint summaries
+- In-app notifications
+- Real-time updates using Socket.io
+- Responsive interface for desktop and mobile
 
-Public registration always creates a standard `user` account. For the first deployment, register your own account, then promote that account to `admin` directly in your trusted MongoDB database (for example, using MongoDB Compass). Do not expose an unauthenticated public admin-registration endpoint. After the first admin exists, create engineer/admin accounts from the admin interface.
+## Complaint Workflow
 
-### Environment variables
+1. A user submits a complaint.
+2. An administrator reviews and assigns it to an engineer.
+3. The engineer updates progress and adds remarks.
+4. The complaint moves through its status workflow.
+5. The user can follow the complaint progress.
 
-`PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_URL`, and `NODE_ENV` are read by the server. Never commit `.env`; use `server/.env.example` as a template. Uploaded complaint files are local runtime data and are excluded from Git.
+## Technology Stack
 
-### Security notes
+| Layer | Technology |
+| --- | --- |
+| Frontend | React 18, Vite, Tailwind CSS |
+| UI and charts | Lucide React, Recharts |
+| API client | Axios |
+| Backend | Node.js, Express.js |
+| Database | MongoDB, Mongoose |
+| Authentication | JWT, bcryptjs |
+| Uploads | Multer |
+| Real-time | Socket.io |
 
-- Use a long, random `JWT_SECRET` and rotate any secret that may have been shared.
-- Use HTTPS in production and set `CLIENT_URL` to the exact deployed frontend origin.
-- Restrict database access and back up MongoDB regularly.
-- Configure persistent/private object storage before deploying uploads to ephemeral hosting.
+## Project Structure
 
-## 📁 Project Structure
+- `client/` — React interface, components, pages, context, and utilities
+- `server/` — Express API, database models, routes, middleware, and upload handling
 
-```
-army-qes/
-├── client/                   # React + Vite frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── common/       # Reusable UI components
-│   │   │   ├── complaints/   # Complaint-specific components
-│   │   │   └── layout/       # Navbar, Sidebar, Layout
-│   │   ├── context/          # AuthContext, NotificationContext
-│   │   ├── pages/            # All page components
-│   │   └── utils/            # API instance, helpers
-│   ├── tailwind.config.js
-│   └── vite.config.js
-│
-├── server/                   # Node.js + Express backend
-│   ├── config/               # Notification helper
-│   ├── middleware/           # Auth (JWT), Multer upload
-│   ├── models/               # Mongoose schemas
-│   ├── routes/               # REST API endpoints
-│   └── uploads/              # Uploaded images (auto-created)
-│
-└── README.md
-```
+## Local Installation
 
----
+### Prerequisites
 
-## ⚙️ Prerequisites
+- Node.js 18 or newer
+- npm
+- MongoDB local instance or MongoDB Atlas
 
-- **Node.js** v18+
-- **MongoDB** (local or Atlas)
-- **npm** v9+
+### 1. Clone the repository
 
----
+`git clone https://github.com/Sanjeev6235/Army-QES-Complaint-Management-System.git`
 
-## 🚀 Quick Setup
+### 2. Install dependencies
 
-### 1. Clone / Extract the project
+From the repository root, run `npm run install:all`.
 
-```bash
-cd army-qes
-```
+### 3. Configure the server
 
-### 2. Setup the Server
+Copy `server/.env.example` to `server/.env`. Set the MongoDB connection string, a strong JWT secret, the server port, and the frontend origin. Never commit the real `.env` file.
 
-```bash
-cd server
-npm install
-```
+### 4. Start the application
 
-Create a `.env` file (copy from `.env.example`):
+Open two terminals:
 
-```bash
-cp .env.example .env
-```
+- Backend: `npm run dev:server`
+- Frontend: `npm run dev:client`
 
-Edit `.env`:
+The frontend normally runs at `http://localhost:5173`; use the exact URL printed by Vite.
 
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/army-qes
-JWT_SECRET=your_super_secret_jwt_key_change_in_production
-CLIENT_URL=http://localhost:5173
-NODE_ENV=development
-```
+## First Administrator Setup
 
-> **MongoDB Atlas users:** Replace `MONGODB_URI` with your Atlas connection string.
+Public registration should create a standard user account. For an initial deployment, create the first administrator through a trusted database setup process or the project's controlled administrative bootstrap procedure. Do not expose an unauthenticated admin-registration route.
 
-### 3. Setup the Client
+## Production Security Checklist
 
-```bash
-cd ../client
-npm install
-```
+- Use HTTPS and a strong, private JWT secret.
+- Restrict MongoDB network access and configure backups.
+- Set the correct production frontend origin.
+- Validate file uploads and enforce file-size limits.
+- Use persistent, access-controlled storage for uploaded files.
+- Review role permissions before deploying with real users.
 
-### 4. Run the Application
+## Project Purpose
 
-**Terminal 1 — Backend:**
-```bash
-cd server
-npm run dev
-```
+This project demonstrates practical full-stack development concepts: authentication, role-based authorisation, REST API design, database modelling, file uploads, real-time notifications, and dashboard reporting.
 
-**Terminal 2 — Frontend:**
-```bash
-cd client
-npm run dev
-```
+## Author
 
-Open **http://localhost:5173** in your browser.
+**Sanjeev Kumar** · [GitHub](https://github.com/Sanjeev6235)
 
 ---
 
-## 🔐 Authentication & First Login
-
-1. **Register** the first account at `/register`
-   - The **first registered user automatically becomes Admin**
-   - All subsequent registrations default to **User** role
-2. Login at `/login`
-3. Admin can **assign Engineer role** from the Users panel
-
-### Role Permissions
-
-| Feature                   | User | Engineer | Admin |
-|---------------------------|------|----------|-------|
-| Submit complaint          | ✅   | ❌       | ✅    |
-| View own complaints       | ✅   | ❌       | ✅    |
-| View assigned complaints  | ❌   | ✅       | ✅    |
-| Update complaint status   | ❌   | ✅       | ✅    |
-| Add remarks               | ❌   | ✅       | ✅    |
-| Assign engineer           | ❌   | ❌       | ✅    |
-| Manage users              | ❌   | ❌       | ✅    |
-| View analytics dashboard  | ❌   | ❌       | ✅    |
-
----
-
-## 📡 API Reference
-
-### Auth
-| Method | Endpoint             | Description       | Auth     |
-|--------|----------------------|-------------------|----------|
-| POST   | /api/auth/register   | Register user     | Public   |
-| POST   | /api/auth/login      | Login             | Public   |
-| GET    | /api/auth/me         | Get current user  | JWT      |
-
-### Complaints
-| Method | Endpoint                | Description              | Auth          |
-|--------|-------------------------|--------------------------|---------------|
-| POST   | /api/complaints         | Create complaint         | User/Admin    |
-| GET    | /api/complaints         | List (role-filtered)     | All           |
-| GET    | /api/complaints/:id     | Get single complaint     | All           |
-| PUT    | /api/complaints/:id     | Update complaint         | Role-based    |
-| DELETE | /api/complaints/:id     | Delete complaint         | User/Admin    |
-
-### Users (Admin only)
-| Method | Endpoint                   | Description        |
-|--------|----------------------------|--------------------|
-| GET    | /api/users                 | List all users     |
-| GET    | /api/users/engineers       | List engineers     |
-| POST   | /api/users/create          | Create user        |
-| PUT    | /api/users/:id/role        | Update role        |
-| PUT    | /api/users/:id             | Update user info   |
-| DELETE | /api/users/:id             | Deactivate user    |
-
-### Notifications
-| Method | Endpoint                          | Description           |
-|--------|-----------------------------------|-----------------------|
-| GET    | /api/notifications                | Get my notifications  |
-| PUT    | /api/notifications/read-all       | Mark all read         |
-| PUT    | /api/notifications/:id/read       | Mark one read         |
-
-### Dashboard
-| Method | Endpoint                    | Description              |
-|--------|-----------------------------|--------------------------|
-| GET    | /api/dashboard/stats        | Admin analytics          |
-| GET    | /api/dashboard/engineer-stats | Engineer stats         |
-| GET    | /api/dashboard/user-stats   | User stats               |
-
----
-
-## 🔄 Complaint Workflow
-
-```
-User Submits → [Pending]
-     ↓ Admin assigns engineer
-[Assigned] → Engineer notified
-     ↓ Engineer starts work
-[In Progress] → User notified
-     ↓ Engineer marks complete
-[Completed] → User notified
-```
-
----
-
-## ✨ Features
-
-- **JWT Authentication** with role-based access control
-- **Real-time notifications** via Socket.io (in-app only, no email)
-- **Image uploads** (before & after repair photos, local storage)
-- **Analytics dashboard** with Recharts (bar chart, pie chart, monthly trend)
-- **Complaint workflow** with status tracking
-- **Search & filter** complaints by status, category, priority
-- **Pagination** on all list views
-- **Toast notifications** for user feedback
-- **Mobile responsive** design
-
----
-
-## 🎨 Tech Stack
-
-| Layer     | Technology                          |
-|-----------|-------------------------------------|
-| Frontend  | React 18, Vite, Tailwind CSS        |
-| Icons     | Lucide React                        |
-| Charts    | Recharts                            |
-| HTTP      | Axios                               |
-| Realtime  | Socket.io client                    |
-| Backend   | Node.js, Express.js                 |
-| Database  | MongoDB, Mongoose                   |
-| Auth      | JWT, bcryptjs                       |
-| Upload    | Multer (local storage)              |
-| Realtime  | Socket.io server                    |
-
----
-
-## 🔒 Security
-
-- Passwords hashed with **bcryptjs** (12 salt rounds)
-- **JWT** tokens expire in 7 days
-- All sensitive routes protected by middleware
-- Role-based authorization on every endpoint
-- File upload validation (images only, 5MB max)
-
----
-
-## 🐛 Troubleshooting
-
-**MongoDB connection error:**
-- Ensure MongoDB is running: `mongod --dbpath /data/db`
-- Or use MongoDB Atlas and update `MONGODB_URI` in `.env`
-
-**Port already in use:**
-- Change `PORT` in server `.env`
-- Vite uses 5173 by default; change in `vite.config.js`
-
-**Images not loading:**
-- The `/uploads` directory is served statically from the server
-- Ensure both server and client are running
-
----
-
-## 📄 License
-
-MIT — For internal Army use.
+Developed as a full-stack workflow management project.
